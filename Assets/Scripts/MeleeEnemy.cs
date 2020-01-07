@@ -7,12 +7,15 @@ public class MeleeEnemy : Enemy
 {
 
     [SerializeField] float moveSpeed=1f;
+    [SerializeField] float attackSpeed = 0.3f;
+    [SerializeField] float attackDamage = 50f;
     [SerializeField] Slider healthComponent=null;
-    [SerializeField] Canvas Canvas=null;
+    [SerializeField] Canvas canvas=null;
 
      Transform player=null;
      Rigidbody2D rb=null;
-    Slider healthUI = null;
+     Slider healthUI = null;
+    Coroutine attackCoroutine = null;
 
     private void Start()
     {
@@ -20,57 +23,78 @@ public class MeleeEnemy : Enemy
         rb = GetComponent<Rigidbody2D>();
 
         healthUI = Instantiate(healthComponent, Camera.main.WorldToScreenPoint(transform.position), Quaternion.identity) as Slider;
-        healthUI.transform.parent = Canvas.transform;
+        healthUI.transform.parent = canvas.transform;
 
     }
 
     private void Update()
     {
-        healthBar();
+       base.healthBar(healthUI);
     }
 
-    private void healthBar()
-    {
-        Vector2 healthUiPosition = new Vector2(transform.position.x, transform.position.y + 0.5f);
-        healthUI.transform.position = Camera.main.WorldToScreenPoint(healthUiPosition);
-        healthUI.value = GetComponent<Health>().getCurrentHealthPercentage();
-    }
+    
 
-    protected override void attack()
+    protected override IEnumerator attack(GameObject player)
     {
-        throw new System.NotImplementedException();
+        while (true)
+        {
+            if (player)
+            {
+                player.GetComponent<SpriteRenderer>().color = Color.red;
+                player.GetComponent<Health>().decreaseCurrentHealth(attackDamage);
+                moveSpeed = 0;
+                yield return new WaitForSeconds(attackSpeed);
+                player.GetComponent<SpriteRenderer>().color = Color.white;
+                yield return new WaitForSeconds(attackSpeed);
+            }
+        }
     }
 
     private void OnDestroy()
     {
-        Destroy(healthUI.gameObject);
+        if (healthUI.gameObject)
+        {
+            Destroy(healthUI.gameObject);
+        }
     }
 
     protected override void move()
     {
-        Vector2 direction = player.position - transform.position;
-        lookatPlayer(direction);
-        direction.Normalize();
-        rb.MovePosition((Vector2)transform.position+(direction*moveSpeed*Time.deltaTime));
+        if (player)
+        {
+            Vector2 direction = player.position - transform.position;
+            lookatPlayer(direction);
+            direction.Normalize();
+            rb.MovePosition((Vector2)transform.position + (direction * moveSpeed * Time.deltaTime));
+        }
     }
 
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Player>())
+        {
+            attackCoroutine = StartCoroutine(attack(collision.gameObject));
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Player>())
+        {
+            stopAttacking(collision.gameObject);
+        }
+    }
+
+    private void stopAttacking(GameObject player)
+    {
+        if (player)
+        {
+            moveSpeed = 1.5f;
+            StopCoroutine(attackCoroutine);
+            player.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
 
    
-
-    private void lookatPlayer(Vector2 direction)
-    {
-        
-        if (direction.x <= 0)
-        {
-            var rotationVector = transform.rotation.eulerAngles;
-            rotationVector.y = 0;
-            transform.rotation = Quaternion.Euler(rotationVector);
-        }
-        else
-        {
-            var rotationVector = transform.rotation.eulerAngles;
-            rotationVector.y = 180;
-            transform.rotation = Quaternion.Euler(rotationVector);
-        }
-    }
 }

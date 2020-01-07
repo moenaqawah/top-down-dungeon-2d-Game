@@ -1,23 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
 
     [SerializeField] float attackRange = 5f;
     [SerializeField] GameObject bullet = null;
     [SerializeField] float timeBetweenBullets = 0.5f;
-    
+    [SerializeField] Slider healthComponent = null;
+    [SerializeField] Canvas canvas = null;
+
 
     Transform closestEnemy = null;
     bool isFiring = false;
     Coroutine fireCoroutine = null;
+    Slider healthUI = null;
 
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 60;
+
+        healthUI = Instantiate(healthComponent, Camera.main.WorldToScreenPoint(transform.position), Quaternion.identity) as Slider;
+        healthUI.transform.parent = canvas.transform;
+    }
+
+    private void healthBar()
+    {
+        Vector2 healthUiPosition = new Vector2(transform.position.x, transform.position.y + 0.5f);
+        healthUI.transform.position = Camera.main.WorldToScreenPoint(healthUiPosition);
+        healthUI.value = GetComponent<Health>().getCurrentHealthPercentage();
     }
 
     // Update is called once per frame
@@ -39,7 +52,20 @@ public class Player : MonoBehaviour
                 isFiring = false;
             }
         }
+      
+    }
 
+    private void OnDestroy()
+    {
+        if (healthUI.gameObject)
+        {
+            Destroy(healthUI.gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        healthBar();
     }
 
     IEnumerator Fire()

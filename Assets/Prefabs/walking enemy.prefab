@@ -98,9 +98,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1.5
+  attackSpeed: 0.3
+  attackDamage: 50
   healthComponent: {fileID: 3950422537894307641, guid: 7e361c28129195f4d8ee7884510cb5e1,
     type: 3}
-  Canvas: {fileID: 0}
+  canvas: {fileID: 0}
 --- !u!50 &2767520955074032588
 Rigidbody2D:
   serializedVersion: 4
@@ -161,5 +163,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minHealth: 0
-  maxHealth: 30
-  currentHealth: 30
+  maxHealth: 1000
+  currentHealth: 1000

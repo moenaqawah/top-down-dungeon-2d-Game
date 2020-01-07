@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1364033317714535163}
   - component: {fileID: 1364033317714535162}
   - component: {fileID: 4796311886486061771}
+  - component: {fileID: 3911577146127889715}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -106,7 +107,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1364033317714535143}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -161,4 +162,21 @@ MonoBehaviour:
   attackRange: 4
   bullet: {fileID: 5855374559093471366, guid: 918de9bcd0371774e99bcfdaefa66d0f, type: 3}
   timeBetweenBullets: 0.5
-  bulletSpeed: 200
+  healthComponent: {fileID: 8751988293661279107, guid: 1c3a20befb5e3ab4ead4ea478ac2e775,
+    type: 3}
+  canvas: {fileID: 0}
+--- !u!114 &3911577146127889715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364033317714535143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e4e6633dc9b6324c906b0a33e847a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minHealth: 0
+  maxHealth: 1000
+  currentHealth: 1000
